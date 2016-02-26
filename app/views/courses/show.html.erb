@@ -1,0 +1,112 @@
+<%-# Fedena
+#Copyright 2010 Foradian Technologies Private Limited
+#
+#This product includes software developed at
+#Project Fedena - http://www.projectfedena.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+<% content_for :head2 do %>
+    <%= stylesheet_link_tag '/images/img/icsw2_32/icsw2_32' %>
+<% end %>
+<div class="container">
+  <ul id="breadcrumbs">
+    <li><a href="<%= url_for (:controller => "user", :action => "dashboard")%>"><i class="icon-home"></i></a></li>
+    <li><a href="<%= url_for (:controller => "configuration")%>"><%= t('configuration_text') %></a></li>
+    <li><a href="<%= url_for (:controller => "courses")%>"><%= t('courses_text') %></a></li>
+    <li><a href="#"><%=  @course.full_name %></a></li>
+
+
+  </ul>
+</div>
+
+<!--<div id="content-header">
+  <%= image_tag("/images/show_settings.png") %>
+  <h1><%= t('courses_text') %></h1>
+  <h3><%= t('show') %></h3>
+  <div id="app-back-button">
+    <%= link_to_function image_tag("/images/buttons/back.png",:border => 0), "history.back()" %>
+  </div>
+</div>-->
+
+<div id="page-yield">
+  <div class="container">
+    <% unless flash[:notice].nil? %>
+        <div class="row-fluid">
+          <div class="span12">
+            <div class="alert alert-info">
+              <a data-dismiss="alert" class="close">×</a>
+              <strong><%= flash[:notice] %> </strong>
+            </div>
+          </div>
+        </div>
+    <% end %>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="mbox_toolbar clearfix">
+          <%= link_to "<i class='icsw32-create-write'></i><span>#{t('new_text')}</span>".html_safe, new_course_batch_path(@course) %>
+          <%= link_to "<i class='icsw32-bended-arrow-right'></i><span>Group Batches</span>".html_safe, {:controller=>"courses", :action=>"grouped_batches", :id=>@course.id} %>
+          <% if permitted_to? :edit, :course %>
+               <%= link_to "<i class='icsw32-pencil'></i><span>#{t('edit_text')}</span>".html_safe, edit_course_path(@course) if permitted_to? :edit, :course %>
+          <%  end %>
+          <% if permitted_to? :destroy, :course %>
+              <%= link_to "<i class='icsw32-trashcan'></i><span>#{t('delete_text')}</span>".html_safe, course_path(@course), :method => 'delete', :confirm => "#{t('delete_confirm_msg')}" %>
+
+          <%  end %>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="w-box w-box-blue">
+          <div class="w-box-header">
+            <h4><%= @course.full_name %></h4>
+            <i class="pull-right icon-mail"></i>
+          </div>
+          <div class="w-box-content">
+  <div class="box">
+   <!-- <div class="bread_crumb">
+      <%= link_to "#{t('courses_text')}", courses_path %> &raquo;
+      <%= @course.full_name %>
+    </div>-->
+
+    <table class="table">
+      <tbody>
+      <%  @batches.each do |batch| %>
+          <tr>
+            <td style="width: 30px"><img class="img-avatar" alt=""></td>
+            <td>
+              <strong><%= link_to batch.full_name, [@course, batch] %></strong>
+            </td>
+            <td> <div class="pull-right">
+              <div class="toolbar-icons clearfix">
+
+                <%= link_to "<i class='icsw16-pencil icsw16-white'></i>".html_safe , edit_course_batch_path(@course, batch) if permitted_to? :edit, :batches %>
+                <%= link_to ("<i class='icsw16-trashcan-2 icsw16-white'></i>".html_safe, [@course, batch], :method => 'delete', :confirm => "#{t('delete_confirm_msg')}")  if permitted_to? :destroy, :batches %>
+              </div>
+            </div></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+
+
+    <div class="extender"></div>
+  </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
